@@ -1,0 +1,11 @@
+# WordPress core
+wp-config.php
+wp-content/uploads/
+wp-content/cache/
+wp-content/plugins/blog-expense-tracker-plugin/vendor/
+
+# OS / IDE files
+.DS_Store
+Thumbs.db
+*.log
+*.zip

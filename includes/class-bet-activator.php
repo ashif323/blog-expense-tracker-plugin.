@@ -1,21 +1,29 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-if ( ! class_exists('BET_Activator') ) {
+class BET_Activator {
 
-    class BET_Activator {
-        public static function activate() {
-            if ( class_exists('BET_DB') ) {
-                BET_DB::create_tables();
-            }
+    public static function activate() {
+        global $wpdb;
 
-            if ( class_exists('BET_Capabilities') ) {
-                BET_Capabilities::add_caps();
-            }
+        $table_name = $wpdb->prefix . 'bet_expenses';
+        $charset_collate = $wpdb->get_charset_collate();
 
-            if ( false === get_option('bet_currency') ) add_option('bet_currency', 'INR');
-            if ( false === get_option('bet_monthly_budget') ) add_option('bet_monthly_budget', 0);
-        }
+        $sql = "CREATE TABLE $table_name (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            amount DECIMAL(10,2) NOT NULL,
+            category VARCHAR(100) NOT NULL,
+            note TEXT,
+            expense_date DATE NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY  (id)
+        ) $charset_collate;";
+
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
+
+        // Add default options
+        add_option( 'bet_currency', 'USD' );
+        add_option( 'bet_monthly_budget', 0 );
     }
-
 }
